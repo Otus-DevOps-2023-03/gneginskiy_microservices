@@ -15,3 +15,6 @@ docker-machine create \
  docker-machine ls
 
  eval $(docker-machine env docker-host)
+
+
+ docker build -t reddit:latest .
