@@ -1,3 +1,4 @@
+#creating a new yc VM
 yc compute instance create \
   --name docker-host \
   --zone ru-central1-a \
@@ -5,16 +6,48 @@ yc compute instance create \
   --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=15 \
   --ssh-key ~/.ssh/grich.pub
 
+#setting up a docker-machine agent there.
 docker-machine create \
   --driver generic \
-  --generic-ip-address=158.160.108.236 \
+  --generic-ip-address=158.160.113.117 \
   --generic-ssh-user yc-user \
   --generic-ssh-key ~/.ssh/grich \
   docker-host
 
+#list available docker machines
  docker-machine ls
 
+#switch to remote docker host
  eval $(docker-machine env docker-host)
+
+#switch to local docker host
+ eval $(docker-machine env --unset)
+#remove docker-machine evn:
+- docker-machine rm docker-host
 
 
  docker build -t reddit:latest .
+
+  docker run --name reddit -d --network=host reddit:latest
+
+
+  docker login
+  
+#-------
+
+  #building sources:
+  docker build -t gneginskiy/post:1.0 ./post-py
+  docker build -t gneginskiy/comment:1.0 ./comment
+  docker build -t gneginskiy/ui:1.0 ./ui
+
+  #creating a network
+  docker network create reddit
+
+  #creating a volume
+   docker volume create reddit_db
+
+  #running containers
+  docker run -d --network=reddit --network-alias=post_db -v reddit_db --network-alias=comment_db mongo:latest
+  docker run -d --network=reddit --network-alias=post gneginskiy/post:1.0
+  docker run -d --network=reddit --network-alias=comment gneginskiy/comment:1.0
+  docker run -d --network=reddit -p 9292:9292 gneginskiy/ui:1.0
