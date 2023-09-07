@@ -1,7 +1,7 @@
-FROM ubuntu:16.04
-RUN apt-get update \
- && apt-get install -y ruby-full ruby-dev build-essential \
- && gem install bundler --no-ri --no-rdoc
+FROM ruby:2.5.5-alpine3.10
+
+RUN apk --no-cache --update add build-base
+
 ENV APP_HOME /app
 RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
