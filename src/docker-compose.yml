@@ -1,0 +1,44 @@
+version: '3.4'
+services:
+  post_db:
+    platform: ${MONGO_PLATFORM}
+    image: mongo:${MONGO_VER}
+    volumes:
+      - post_db:/data/db
+    networks:
+      - back_net
+      - front_net
+  ui:
+    platform: linux/amd64
+    build: ./ui
+    image: ${USERNAME}/ui:1.0
+    ports:
+      - 9292:9292/tcp
+    networks:
+      - front_net
+
+  post:
+    platform: linux/amd64
+    build: ./post-py
+    image: ${USERNAME}/post:1.0
+    networks:
+      - back_net
+      - front_net
+
+  comment:
+    platform: linux/amd64
+    build: ./comment
+    image: ${USERNAME}/comment:1.0
+    networks:
+      - back_net
+      - front_net
+
+
+volumes:
+  post_db:
+
+networks:
+  front_net:
+  back_net:
+
+#    platform: linux/x86_64 # is required for M1, won't work otherwise .
