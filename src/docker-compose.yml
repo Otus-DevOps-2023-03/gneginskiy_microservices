@@ -1,7 +1,7 @@
 version: '3.4'
 services:
   post_db:
-    platform: ${MONGO_PLATFORM}
+#    platform: ${MONGO_PLATFORM} #othwerise tests won't work.
     image: mongo:${MONGO_VER}
     volumes:
       - post_db:/data/db
