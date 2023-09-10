@@ -9,7 +9,7 @@ services:
       - back_net
       - front_net
   ui:
-    platform: linux/amd64
+#    platform: linux/amd64
     build: ./ui
     image: ${USERNAME}/ui:1.0
     ports:
@@ -18,7 +18,7 @@ services:
       - front_net
 
   post:
-    platform: linux/amd64
+#    platform: linux/amd64
     build: ./post-py
     image: ${USERNAME}/post:1.0
     networks:
@@ -26,7 +26,7 @@ services:
       - front_net
 
   comment:
-    platform: linux/amd64
+#    platform: linux/amd64
     build: ./comment
     image: ${USERNAME}/comment:1.0
     networks:
