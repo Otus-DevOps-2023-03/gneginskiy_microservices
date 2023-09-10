@@ -40,5 +40,3 @@ volumes:
 networks:
   front_net:
   back_net:
-
-#    platform: linux/x86_64 # is required for M1, won't work otherwise .
