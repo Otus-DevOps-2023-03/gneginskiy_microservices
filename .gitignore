@@ -24,3 +24,4 @@
 /ansible/roles/jdauphant.nginx/
 /ansible/vault.key
 
+/docker/.env
