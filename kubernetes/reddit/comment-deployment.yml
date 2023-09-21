@@ -16,3 +16,4 @@ spec:
       containers:
         - image: gneginskiy/comment:latest
           name: comment
+
