@@ -18,7 +18,7 @@ docker-machine create \
  docker-machine ls
 
 #switch to remote docker host
- eval $(docker-machine env docker-host)
+ eval $(docker-machine env logging)
 
 #switch to local docker host
  eval $(docker-machine env --unset)
@@ -81,3 +81,30 @@ docker build -t $USER_NAME/prometheus .
 
 docker-compose down
 docker-compose up
+
+
+cd ./src/ui && bash docker_build.sh && docker push $USER_NAME/ui
+
+
+#creating a new yc VM
+yc compute instance create \
+  --name logging \
+  --zone ru-central1-a \
+  --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
+  --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-1804-lts,size=30 \
+  --ssh-key ~/.ssh/grich.pub
+  --memory 8
+
+#setting up a docker-machine agent there.
+docker-machine create \
+  --driver generic \
+  --generic-ip-address=51.250.80.169 \
+  --generic-ssh-user yc-user \
+  --generic-ssh-key ~/.ssh/grich \
+  logging
+
+
+bash docker_build.sh && docker push $USER_NAME/ui:logging
+cd ../post-py && bash docker_build.sh && docker push $USER_NAME/post:logging
+cd ../comment && bash docker_build.sh && docker push $USER_NAME/comment:logging
+
