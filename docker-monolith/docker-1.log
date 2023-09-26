@@ -1,0 +1,28 @@
+
+(base) greg@greg gneginskiy_microservices % docker commit 1dc0294b33dd yourname/ubuntu-tmp-file
+sha256:e508acf09e6b1af533a66a346d59cfb5ed71315dd29cd08f89ac45d13c1004b6
+
+(base) greg@greg gneginskiy_microservices %  docker images
+REPOSITORY                          TAG             IMAGE ID       CREATED          SIZE
+yourname/ubuntu-tmp-file            latest          e508acf09e6b   45 seconds ago   56.7MB
+
+
+#image inspection:
+docker inspect e508acf09e6b
+
+#container inspection:
+docker inspect 1dc0294b33dd
+------------------------------------------------------------------------------------------------------------------------
+Task (*):
+
+A Docker container is a running or stopped instance of an image,
+and the docker inspect <container_id> command provides details about that specific container instance.
+
+A Docker image is a snapshot of a filesystem and configuration settings used to create containers.
+The docker inspect <image_id> command provides information about the image itself,
+which can be used to create multiple containers with similar configurations.
+
+Inspecting a container, we can see that it differs from the image inspection output.
+The difference is comprised of json objects "HostConfig", "NetworkSettings","State" and more,
+which seemingly makes more sense for a container, rather than for an image.
+------------------------------------------------------------------------------------------------------------------------
