@@ -2,29 +2,28 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ui-deployment
+  labels:
+    app: reddit
+    component: ui
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      app: ui
+      app: reddit
+      component: ui
   template:
     metadata:
-      name: ui
+      name: ui-pod
       labels:
-        app: ui
+        app: reddit
+        component: ui
     spec:
       containers:
-        - image: gneginskiy/ui:latest
-          name: ui
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: ui-service
-spec:
-  type: NodePort
-  ports:
-    - port: 9292
-      targetPort: 9292
-  selector:
-    app: ui
+      - image: gneginskiy/ui:latest
+        name: ui
+        env:
+        - name: ENV
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+
