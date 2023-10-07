@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,21 +7,18 @@ metadata:
     app: reddit
     component: comment
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: reddit
       component: comment
   template:
     metadata:
-      name: comment
+      name: COMMENT_DATABASE_HOST
       labels:
         app: reddit
         component: comment
     spec:
       containers:
-      - image: gneginskiy/comment:latest
+      - image: gneginskiy/comment
         name: comment
-        env:
-        - name: COMMENT_DATABASE_HOST
-          value: comment-db

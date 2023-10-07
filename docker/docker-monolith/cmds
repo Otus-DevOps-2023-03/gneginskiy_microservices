@@ -112,3 +112,35 @@ cd ../comment && bash docker_build.sh && docker push $USER_NAME/comment:latest
 
 
  minikube start
+
+---------------------------------------------------------------------------------
+kubectl apply -f ui-deployment.yml      # runs component
+kubectl get deployment                  # shows list of deployments
+kubectl delete deployment %_name_%      # removes deployment
+kubectl apply -f ./kubernetes/reddit    # applies whole folder of configs
+
+kubectl get pods --selector component=ui        #show all ui pods
+kubectl delete pods --selector component=ui     #remove all ui pods
+
+kubectl port-forward %_pod_name_% 8080:9292     #port forwarding on localhost
+
+kubectl get pods --selector component=ui #
+
+
+
+kubectl describe service comment | grep Endpoints   #show 'comment' service endpoints description
+kubectl exec -ti <pod-name> nslookup comment        #execute cmds inside of the pod
+kubectl logs <pod-name>                             #show pod logs
+
+
+
+
+
+
+
+
+
+
+
+
+
