@@ -1,12 +1,14 @@
+---
 version: '3'
 services:
+
   zipkin:
     image: openzipkin/zipkin:2.21.0
     ports:
       - "9411:9411"
     networks:
-      back_net:
-      front_net:
+      - front_net
+      - back_net
 
   fluentd:
     image: ${USERNAME}/fluentd
