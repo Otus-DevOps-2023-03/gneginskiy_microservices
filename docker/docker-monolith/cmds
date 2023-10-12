@@ -104,7 +104,11 @@ docker-machine create \
   logging
 
 
-bash docker_build.sh && docker push $USER_NAME/ui:logging
-cd ../post-py && bash docker_build.sh && docker push $USER_NAME/post:logging
-cd ../comment && bash docker_build.sh && docker push $USER_NAME/comment:logging
+export USER_NAME=gneginskiy
 
+bash docker_build.sh && docker push $USER_NAME/ui:latest
+cd ../post-py && bash docker_build.sh && docker push $USER_NAME/post:latest
+cd ../comment && bash docker_build.sh && docker push $USER_NAME/comment:latest
+
+
+ minikube start
