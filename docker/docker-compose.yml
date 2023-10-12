@@ -1,91 +1,82 @@
+---
 version: '3.3'
 services:
   post_db:
-    image: mongo:3.2
+    image: mongo:${MONGODB_VERSION}
     volumes:
       - post_db:/data/db
     networks:
       back_net:
         aliases:
-          - "post_db"
-          - "comment_db"
-      front_net:
+          - post_db
+          - comment_db
     environment:
-    - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+
   ui:
-    image: ${USERNAME}/ui:${IMAGE_VERSION}
+    container_name: ui
+    image: ${USERNAME}/ui:${UI_VERSION}
     ports:
-      - 9292:9292/tcp
+      - ${UI_PORT}:9292/tcp
     networks:
-      front_net:
-        aliases:
-          - "ui"
-    environment:
-    - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+      - front_net
     logging:
       driver: "fluentd"
       options:
         fluentd-address: localhost:24224
         tag: service.ui
-  post:
-    image: ${USERNAME}/post:${IMAGE_VERSION}
-    networks:
-      back_net:
-        aliases:
-          - "post"
-      front_net:
-        aliases:
-          - "post"
     environment:
-    - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
-    depends_on:
-      - "post_db"
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+
+  post:
+    image: ${USERNAME}/post:${POST_VERSION}
+    networks:
+      - back_net
+      - front_net
     logging:
       driver: "fluentd"
       options:
         fluentd-address: localhost:24224
         tag: service.post
-  comment:
-    image: ${USERNAME}/comment:${IMAGE_VERSION}
-    networks:
-      back_net:
-        aliases:
-          - "comment"
-      front_net:
-        aliases:
-          - "comment"
     environment:
-    - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
-  prometheus:
-    image: ${USERNAME}/prometheus
-    ports:
-      - '9090:9090'
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+
+  comment:
+    image: ${USERNAME}/comment:${COMMENT_VERSION}
     networks:
-      back_net:
-        aliases:
-          - "prometheus"
-      front_net:
-        aliases:
-          - "prometheus"
-    volumes:
-      - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention=1d'
-  node-exporter:
-    image: prom/node-exporter:v0.15.2
-    user: root
-    networks:
-      back_net:
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+      - back_net
+      - front_net
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+
+  # prometheus:
+  #   image: ${USERNAME}/prometheus
+  #   networks:
+  #     - back_net
+  #     - front_net
+  #   ports:
+  #     - '9090:9090'
+  #   volumes:
+  #     - prometheus_data:/prometheus
+  #   command: # Передаем доп параметры в командной строке
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
+  #     - '--storage.tsdb.path=/prometheus'
+  #     - '--storage.tsdb.retention=1d' # Задаем время хранения метрик в 1 день
+  #
+  # node-exporter:
+  #   image: prom/node-exporter:v0.15.2
+  #   networks:
+  #     - back_net
+  #     - front_net
+  #   user: root
+  #   volumes:
+  #     - /proc:/host/proc:ro
+  #     - /sys:/host/sys:ro
+  #     - /:/rootfs:ro
+  #   command:
+  #     - '--path.procfs=/host/proc'
+  #     - '--path.sysfs=/host/sys'
+  #     - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
 
 volumes:
   post_db:
