@@ -9,7 +9,7 @@ yc compute instance create \
 #setting up a docker-machine agent there.
 docker-machine create \
   --driver generic \
-  --generic-ip-address=158.160.43.113 \
+  --generic-ip-address=158.160.33.211 \
   --generic-ssh-user yc-user \
   --generic-ssh-key ~/.ssh/grich \
   docker-host
@@ -74,3 +74,10 @@ docker kill $(docker ps -q)
 #creating networks:
 > docker network create back_net --subnet=10.0.2.0/24
 > docker network create front_net --subnet=10.0.1.0/24
+
+
+export USER_NAME=gneginskiy
+docker build -t $USER_NAME/prometheus .
+
+docker-compose down
+docker-compose up
